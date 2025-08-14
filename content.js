@@ -78,7 +78,6 @@ function detectLegalDocuments() {
         const text = header.textContent.trim().toLowerCase();
         for (const [category, keywords] of Object.entries(legalKeywords)) {
             if (keywords.some(keyword => text.includes(keyword))) {
-                // On ne peut pas associer directement une URL à un en-tête, on peut donc simplement le noter
                 const docType = getDocumentType(text, ''); // Pas de href
                 if (docType) {
                      const exists = foundDocuments.some(doc => doc.text === text);
@@ -142,20 +141,13 @@ function getDocumentType(text, href) {
     return null;
 }
 
-
-// Écouter les messages du popup
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    // Vérifier que le message provient de notre extension et que nous sommes sur le bon site
-    if (request.action === "pasteUrlInTextarea") {
-        const textarea = document.getElementById('legal-text');
-        if (textarea) {
-            textarea.value = request.url;
-            textarea.dispatchEvent(new Event('input', { bubbles: true }));
-            console.log('URL collée dans le textarea:', request.url);
-        } else {
-            console.warn('Textarea not found on the page.');
-        }
-    }
-  }
-);
+const detectedDocs = detectLegalDocuments();
+chrome.runtime.sendMessage({
+    action: 'updateBadge',
+    count: detectedDocs.documents.length
+});
+chrome.runtime.sendMessage({
+    action: 'storeLegalDocuments',
+    documents: detectedDocs.documents,
+    url: detectedDocs.url
+});
