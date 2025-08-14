@@ -1,244 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr" data-lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-fr="Legal Documents Scraper" data-en="Legal Documents Scraper"></title>
-    <style>
-        :root {
-            --bg-color: #1a1a2e;
-            --card-bg-color: rgba(255, 255, 255, 0.05);
-            --text-color: #e0e0e0;
-            --primary-color: #5d5dff;
-            --secondary-color: #e94560;
-            --success-color: #4CAF50;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow-color: rgba(0, 0, 0, 0.2);
-            --font-family: 'Poppins', sans-serif;
-        }
-
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-
-        body {
-            width: 420px;
-            padding: 24px;
-            font-family: var(--font-family);
-            margin: 0;
-            background: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s ease;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .header p {
-            margin: 4px 0 0;
-            opacity: 0.8;
-            font-size: 14px;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
-
-        .lang-btn, .theme-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 14px;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .lang-btn:hover, .theme-btn:hover {
-            background: var(--card-bg-color);
-            transform: translateY(-2px);
-        }
-
-        .card {
-            background: var(--card-bg-color);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 20px var(--shadow-color);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px var(--shadow-color);
-        }
-
-        .scan-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary-color);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .scan-btn:hover {
-            background: #4a4acd;
-            transform: translateY(-2px);
-        }
-        
-        .scan-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .status {
-            text-align: center;
-            font-size: 14px;
-            margin-top: 15px;
-            font-weight: 500;
-            opacity: 0.9;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .spinner {
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            border-top: 3px solid var(--primary-color);
-            width: 32px;
-            height: 32px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .results {
-            margin-top: 20px;
-        }
-
-        .result-item {
-            background: var(--card-bg-color);
-            border-left: 4px solid var(--primary-color);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: all 0.2s ease;
-        }
-        
-        .result-item:hover {
-            border-left-color: var(--success-color);
-        }
-        
-        .result-item h3 {
-            margin: 0 0 8px 0;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .result-item p {
-            margin: 0;
-            font-size: 13px;
-            opacity: 0.7;
-        }
-
-        .result-item a {
-            color: var(--text-color);
-            text-decoration: none;
-            border-bottom: 1px dotted rgba(255, 255, 255, 0.4);
-            word-break: break-all;
-            transition: all 0.2s ease;
-        }
-        
-        .result-item a:hover {
-            border-bottom-style: solid;
-            color: var(--success-color);
-        }
-
-        .export-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--success-color);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-        }
-        
-        .export-btn:hover {
-            background: #3e8e41;
-            transform: translateY(-2px);
-        }
-
-        .no-results {
-            text-align: center;
-            opacity: 0.7;
-            font-style: italic;
-            padding: 20px;
-            font-size: 14px;
-        }
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h1 data-fr="🔍 Legal Scraper" data-en="🔍 Legal Scraper">🔍 Legal Scraper</h1>
-            <p data-fr="Extraire les documents légaux" data-en="Extract legal documents"></p>
-        </div>
-
-        <div class="controls">
-            <button id="langBtn" class="lang-btn" data-fr="English" data-en="Français">English</button>
-        </div>
-        
-        <div class="card scan-section">
-            <button id="scanBtn" class="scan-btn">
-                <span data-fr="🚀 Scanner cette page" data-en="🚀 Scan this page">🚀 Scanner cette page</span>
-            </button>
-            
-            <div id="status" class="status"></div>
-            
-            <div id="loading" class="loading" style="display: none;">
-                <div class="spinner"></div>
-                <p data-fr="Analyse en cours..." data-en="Scanning in progress..."></p>
+            <div>
+                <h1 data-fr=" Legal Scraper" data-en=" Legal Scraper"> J'ai Lu Les <span>CGU</span> </h1>
+                <p data-fr="Extraire les documents légaux" data-en="Extract legal documents"></p>
             </div>
+            <div class="controls">
+                <button id="langBtn" class="lang-btn" data-fr="English" data-en="Français">English</button>
+                <button id="reloadBtn" class="reload-btn" data-fr="🔄 Recharger la page" data-en="🔄 Reload page">🔄
+                    Recharger la page</button>
+            </div>
+
         </div>
-        
+        <div id="status" class="status"></div>
+
         <div id="results" class="results" style="display: none;">
             <div id="resultsContainer"></div>
             <button id="exportBtn" class="export-btn" style="display: none;">
@@ -246,7 +31,8 @@
             </button>
         </div>
     </div>
-    
+
     <script src="popup.js"></script>
 </body>
+
 </html>
