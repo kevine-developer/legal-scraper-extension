@@ -80,25 +80,60 @@ en: {
         });
     });
 
+    // Fonction améliorée pour récupérer et afficher les résultats
     function fetchAndDisplayResults() {
+        // Afficher l'indicateur de chargement pendant la récupération
+        loadingIndicator.style.display = 'flex';
+        resultsEl.style.display = 'none';
+
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
             if (tabs.length > 0) {
                 currentTabId = tabs[0].id;
+                const currentUrl = tabs[0].url;
+                
+                // Vérifier d'abord s'il y a des données stockées pour cet onglet
                 chrome.storage.local.get(['scrapingHistory'], (data) => {
                     const history = data.scrapingHistory || [];
-                    const latestScan = history.find(scan => scan.tabId === currentTabId);
+                    const latestScan = history.find(scan => 
+                        scan.tabId === currentTabId && scan.url === currentUrl
+                    );
 
                     if (latestScan && latestScan.documents) {
+                        // Données trouvées dans le storage
                         currentResults = latestScan;
                         displayResults(currentResults);
                     } else {
-                        displayResults({ documents: [] });
+                        // Pas de données trouvées, injecter le content script pour analyser la page
+                        chrome.scripting.executeScript({
+                            target: { tabId: currentTabId },
+                            files: ['content.js']
+                        }, () => {
+                            // Attendre un peu que le content script s'exécute
+                            setTimeout(() => {
+                                // Réessayer de récupérer les données
+                                chrome.storage.local.get(['scrapingHistory'], (newData) => {
+                                    const newHistory = newData.scrapingHistory || [];
+                                    const newScan = newHistory.find(scan => 
+                                        scan.tabId === currentTabId && scan.url === currentUrl
+                                    );
+                                    
+                                    if (newScan && newScan.documents) {
+                                        currentResults = newScan;
+                                        displayResults(currentResults);
+                                    } else {
+                                        // Aucun document trouvé
+                                        displayResults({ documents: [] });
+                                    }
+                                });
+                            }, 1000);
+                        });
                     }
                 });
             }
         });
     }
 
+    // Lancer automatiquement l'analyse au chargement du popup
     fetchAndDisplayResults();
 
     chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -146,10 +181,7 @@ en: {
         let html = '';
         const copyIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
             <path d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-            <path d="M2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
-        </svg>`;
-        const checkIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M12.736 3.97a.5.5 0 0 1 .707.707L6.639 11.97a.5.5 0 0 1-.707 0L2.263 8.293a.5.5 0 0 1 .707-.707l3.05 3.05L12.736 3.97z"/>
+            <path d="M2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1-2-2h1v1z"/>
         </svg>`;
 
         data.documents.forEach(doc => {
@@ -191,7 +223,7 @@ en: {
             const urlToCopy = button.getAttribute('data-url');
             const copyIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                <path d="M2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+                <path d="M2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
             </svg>`;
             const checkIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M12.736 3.97a.5.5 0 0 1 .707.707L6.639 11.97a.5.5 0 0 1-.707 0L2.263 8.293a.5.5 0 0 1 .707-.707l3.05 3.05L12.736 3.97z"/>

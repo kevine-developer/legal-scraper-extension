@@ -3,14 +3,14 @@
   "name": "Legal Documents Scraper",
   "version": "1.0",
   "description": "Extraire automatiquement les CGU, mentions légales et politique de confidentialité d'un site web",
-"permissions": [
-  "activeTab",
-  "storage",
-  "scripting",
-  "contextMenus",
-  "notifications",
-  "alarms"
-],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "contextMenus",
+    "notifications",
+    "alarms"
+  ],
   "host_permissions": [
     "http://*/*",
     "https://*/*"
