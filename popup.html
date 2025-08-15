@@ -13,22 +13,35 @@
         <div class="header">
             <div>
                 <h1 data-fr=" Legal Scraper" data-en=" Legal Scraper"> J'ai Lu Les <span>CGU</span> </h1>
-                <p data-fr="Extraire les documents légaux" data-en="Extract legal documents"></p>
+                <p data-fr="Extraire les liens documents légaux" data-en="Extract legal documents link"></p>
             </div>
             <div class="controls">
                 <button id="langBtn" class="lang-btn" data-fr="English" data-en="Français">English</button>
-                <button id="reloadBtn" class="reload-btn" data-fr="🔄 Recharger la page" data-en="🔄 Reload page">🔄
+                <button id="reloadBtn" class="reload-btn" data-fr="Recharger la page" data-en="Reload page">
                     Recharger la page</button>
             </div>
 
         </div>
         <div id="status" class="status"></div>
+        
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+            <div class="spinner"></div>
+            <p data-fr="Analyse en cours..." data-en="Analysis in progress..."></p>
+        </div>
 
         <div id="results" class="results" style="display: none;">
+                 <div id="instructions" class="instructions" style="display: none;">
+                <p data-fr="Pour comprendre les textes juridiques, copiez le lien et rendez-vous sur le site 'J'ai lu les CGU' pour le coller." data-en="To understand legal texts, copy the link and go to the 'I've read the T&Cs' website to paste it."></p>
+            </div>
             <div id="resultsContainer"></div>
-            <button id="exportBtn" class="export-btn" style="display: none;">
-                <span data-fr="📄 Exporter en JSON" data-en="📄 Export to JSON">📄 Exporter en JSON</span>
-            </button>
+            <div class="button-group">
+                <button id="understandBtn" class="understand-btn" style="display: none;">
+                    <span data-fr="Comprendre" data-en="Understand">Comprendre</span>
+                </button>
+                <button id="exportBtn" class="export-btn" style="display: none;">
+                    <span data-fr="📄 Exporter en JSON" data-en="📄 Export to JSON">📄 Exporter en JSON</span>
+                </button>
+            </div>
         </div>
     </div>
 

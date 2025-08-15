@@ -22,7 +22,7 @@ Une extension Chrome qui extrait automatiquement les CGU, mentions légales et p
 
 2. **Structure des fichiers** :
 
-```
+```markdown
 legal-scraper-extension/
 ├── manifest.json
 ├── popup.html
@@ -33,17 +33,14 @@ legal-scraper-extension/
 │   ├── icon48.png
 │   └── icon128.png
 └── README.md
-
 ```
 
 3. **Créer les icônes** (optionnel)
-
    - Créez un dossier `icons/`
    - Ajoutez des icônes PNG aux tailles 16x16, 48x48, et 128x128 pixels
    - Ou utilisez des icônes par défaut du navigateur
 
 4. **Installer l'extension** :
-
    - Ouvrez Chrome et allez dans `chrome://extensions/`
    - Activez le "Mode développeur" (en haut à droite)
    - Cliquez sur "Charger l'extension non empaquetée"
